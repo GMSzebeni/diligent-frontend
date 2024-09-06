@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
+import HeroList from './components/heroList';
+import { useFetchHeroes } from './hooks/useFetchHeroes';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App: React.FC = () => {
+  	const { heroes, loading, error, setHeroes } = useFetchHeroes();
+
+  	const toggleAvailability = (id: number) => {
+    	setHeroes(heroes =>
+	        heroes.map(hero =>
+	            hero.id === id ? { ...hero, available: !hero.available } : hero
+	        )
+    	);
+  	};
+
+	if (loading) {
+	    return <div>Loading...</div>;
+	} else if (error != null) {
+	    return <div>{error}</div>;
+	} else {
+	    return (
+	      	<div className="container">
+	          	<h1>App</h1>
+	          	<h2>Heroes</h2>
+	          	<HeroList heroes={heroes} toggleAvailability={toggleAvailability} />
+	      	</div>
+	    );
+	}
+};
 
 export default App;
